@@ -1,6 +1,9 @@
 """LangChain utilities for the GenAI playground."""
 
-from langchain.chains import LLMChain
+from typing import Any
+
+from langchain.chains import ConversationChain
+from langchain.memory import ConversationBufferMemory
 from langchain.prompts import PromptTemplate
 from langchain_community.llms import Ollama
 
@@ -10,8 +13,9 @@ class LangChainHandler:
 
     model_name: str
     llm: Ollama
+    conversation: ConversationChain
 
-    def __init__(self, model_name: str = "tinyllama") -> None:
+    def __init__(self, model_name: str = "orca-mini") -> None:
         """Initialize the handler with a specific model.
 
         Args:
@@ -19,6 +23,7 @@ class LangChainHandler:
         """
         self.model_name = model_name
         self.llm = self._initialize_model()
+        self.conversation = self._create_conversation()
 
     def _initialize_model(self) -> Ollama:
         """Initialize a local Ollama model.
@@ -33,27 +38,45 @@ class LangChainHandler:
             temperature=0.7,
         )
 
-    def create_chain(self) -> LLMChain:
-        """Create a simple LangChain chain.
+    def _create_conversation(self) -> ConversationChain:
+        """Create a conversation chain with memory.
 
         Returns:
-            Configured LLMChain instance
+            Configured ConversationChain instance
         """
+        # Create a memory instance to store conversation
+        memory = ConversationBufferMemory(ai_prefix="Assistant")
+
+        # Create a conversation prompt with cleaner format
         prompt = PromptTemplate(
-            input_variables=["topic"],
-            template="Write a short paragraph about {topic}.",
+            input_variables=["history", "input"],
+            template="""You are a friendly and capable AI assistant chatting with a human.
+            When they say "Hi" or "Hello", greet them back warmly.
+            When they ask questions, answer them directly.
+            Keep your responses natural and friendly.
+
+            Previous messages:
+            {history}
+
+            Human: {input}
+            Assistant:""",
         )
 
-        return LLMChain(llm=self.llm, prompt=prompt)
+        # Create and return the conversation chain
+        return ConversationChain(
+            llm=self.llm,
+            memory=memory,
+            prompt=prompt,
+            verbose=False,
+        )
 
-    def generate_response(self, topic: str) -> str:
-        """Generate a response for a given topic.
+    def generate_response(self, user_input: str) -> str:
+        """Process user input and return AI response.
 
         Args:
-            topic: The topic to generate text about
+            user_input: The user's input message
 
         Returns:
-            Generated text response
+            AI's response
         """
-        chain = self.create_chain()
-        return str(chain.run(topic=topic))
+        return str(self.conversation.predict(input=user_input))

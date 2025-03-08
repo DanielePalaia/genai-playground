@@ -9,13 +9,28 @@ def main() -> None:
         # Initialize LangChain handler
         handler = LangChainHandler()
 
-        print("Generating response (this might take a moment)...")
-        result: str = handler.generate_response(topic="artificial intelligence")
-        print("\nGenerated Response:")
-        print(result)
+        print("Chat initialized. Type your messages (Ctrl+C to exit)")
+        print("-" * 50)
+
+        while True:
+            try:
+                # Get user input
+                user_input = input("\nYou: ").strip()
+                
+                if not user_input:
+                    continue
+
+                # Generate and print response
+                print("\nAI: ", end="", flush=True)
+                response: str = handler.generate_response(user_input)
+                print(response)
+
+            except KeyboardInterrupt:
+                print("\n\nGoodbye! Thanks for chatting!")
+                break
 
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"\nError: {e}")
         print("\nMake sure Ollama is installed and running.")
         print("Install from: https://ollama.ai/")
 
