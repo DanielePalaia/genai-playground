@@ -14,6 +14,7 @@ python-dotenv = ">=1.0.0"
 langchain-community = "^0.0.13"
 pinecone-client = "^6.0.0"
 chromadb = "^0.6.3"
+pymupdf = "^1.25.3"
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.2.0"

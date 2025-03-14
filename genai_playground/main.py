@@ -1,10 +1,20 @@
 from genai_playground.langchain_utils import LangChainHandler
+import sys
 
 def main() -> None:
     """Run the main application."""
+    # take the argument
+    if len(sys.argv) != 2:
+        raise ValueError("you need to specify if you want the chatbot to work with Gemfire/Greenplum or RabbitMQ")
+    
+    augemented_doc = sys.argv[1]
+
+    if augemented_doc != 'Gemfire' and augemented_doc != 'Greenplum' and augemented_doc != 'RabbitMQ':
+        raise ValueError("you can just specify Gemfire/Greenplum or RabbitMQ")
+
     try:
         # Initialize LangChain handler
-        handler = LangChainHandler()
+        handler = LangChainHandler(augemented_doc=augemented_doc)
 
         print("Chat initialized. Type your messages (Ctrl+C to exit)")
         print("-" * 50)
@@ -13,13 +23,15 @@ def main() -> None:
             try:
                 # Get user input
                 user_input = input("\nYou: ").strip()
-                
+
                 if not user_input:
                     continue
 
                 # Generate and print response
                 print("\nAI: ", end="", flush=True)
-                response: str = handler.generate_response(user_input)  # No need to pass additional_info
+                response: str = handler.generate_response(
+                    user_input
+                )  # No need to pass additional_info
                 print(response)
 
             except KeyboardInterrupt:
@@ -30,6 +42,7 @@ def main() -> None:
         print(f"\nError: {e}")
         print("\nMake sure Ollama is installed and running.")
         print("Install from: https://ollama.ai/")
+
 
 if __name__ == "__main__":
     main()
