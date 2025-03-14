@@ -1,20 +1,22 @@
+# main.py
 from genai_playground.langchain_utils import LangChainHandler
 import sys
 
+
 def main() -> None:
     """Run the main application."""
-    # take the argument
+    # Take the argument
     if len(sys.argv) != 2:
-        raise ValueError("you need to specify if you want the chatbot to work with Gemfire/Greenplum or RabbitMQ")
-    
-    augemented_doc = sys.argv[1]
+        raise ValueError("You need to specify if you want the chatbot to work with Gemfire, Greenplum, or RabbitMQ.")
 
-    if augemented_doc != 'Gemfire' and augemented_doc != 'Greenplum' and augemented_doc != 'RabbitMQ':
-        raise ValueError("you can just specify Gemfire/Greenplum or RabbitMQ")
+    augmented_doc = sys.argv[1]
+
+    if augmented_doc not in ["Gemfire", "Greenplum", "RabbitMQ"]:
+        raise ValueError("You can only specify Gemfire, Greenplum, or RabbitMQ.")
 
     try:
         # Initialize LangChain handler
-        handler = LangChainHandler(augemented_doc=augemented_doc)
+        handler = LangChainHandler(augmented_doc=augmented_doc)
 
         print("Chat initialized. Type your messages (Ctrl+C to exit)")
         print("-" * 50)
@@ -29,9 +31,7 @@ def main() -> None:
 
                 # Generate and print response
                 print("\nAI: ", end="", flush=True)
-                response: str = handler.generate_response(
-                    user_input
-                )  # No need to pass additional_info
+                response: str = handler.generate_response(user_input)
                 print(response)
 
             except KeyboardInterrupt:
