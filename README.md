@@ -12,6 +12,7 @@ https://www.rabbitmq.com/
 and the two pdfs for Gemfire and Greenplum official docs:
 
 https://techdocs.broadcom.com/content/dam/broadcom/techdocs/us/en/pdf/vmware-tanzu/data-solutions/tanzu-gemfire/10-1/gf/gf.pdf
+
 https://techdocs.broadcom.com/content/dam/broadcom/techdocs/us/en/pdf/vmware-tanzu/data-solutions/tanzu-greenplum/6/greenplum-database/greenplum-database.pdf
 
 The project is using ollama in order to load a 'orca-mini' model running locally.
