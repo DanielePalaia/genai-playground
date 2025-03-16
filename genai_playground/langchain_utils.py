@@ -35,7 +35,6 @@ class LangChainHandler:
         )
         self.vector_db = self._load_or_create_vector_db()
         self.conversation = self._create_conversation()
-        # No need to initialize HelperUtilityClass since it has only static methods
 
     def _initialize_model(self) -> Ollama:
         """Initialize a local Ollama model.
@@ -88,12 +87,15 @@ class LangChainHandler:
 
         url, source_type = document_sources[self.augmented_doc]
 
-        # Load and preprocess text
+        # Load documents using LangChain loaders
         print(f"Loading {self.augmented_doc} document...")
         if source_type == "website":
-            text = HelperUtilityClass.scrape_website(url)  # Call static method directly
+            documents = HelperUtilityClass.load_website(url)  # Use WebBaseLoader
         elif source_type == "pdf":
-            text = HelperUtilityClass.extract_text_from_pdf(url)  # Call static method directly
+            documents = HelperUtilityClass.load_pdf(url)  # Use PyPDFLoader
+
+        # Preprocess text
+        text = "\n".join([doc.page_content for doc in documents])
         text = self._preprocess_text(text)
 
         # Split text into smaller chunks
